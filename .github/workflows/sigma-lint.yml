@@ -28,5 +28,8 @@ jobs:
       - name: Convert to a target backend as a smoke test (Splunk)
         run: |
           pip install pysigma-backend-splunk
-          sigma convert -t splunk -f default rules/ > /dev/null
+          # --without-pipeline: syntax-level smoke test (every rule compiles to SPL).
+          # The splunk backend requires an explicit pipeline; field-mapping via a
+          # sysmon/splunk pipeline is a future enhancement.
+          sigma convert -t splunk -f default --without-pipeline rules/ > /dev/null
           echo "All rules converted cleanly to SPL."
