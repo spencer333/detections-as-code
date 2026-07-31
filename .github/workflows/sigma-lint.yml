@@ -1,0 +1,32 @@
+name: sigma-lint
+
+# Lints every Sigma rule on push/PR. This is the CI gate that keeps the library trustworthy:
+# a rule that doesn't parse or validate fails the build and never merges.
+
+on:
+  push:
+    paths: ['rules/**', '.github/workflows/sigma-lint.yml']
+  pull_request:
+    paths: ['rules/**']
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install sigma-cli
+        run: pip install sigma-cli pysigma
+
+      - name: Validate all rules parse & pass Sigma checks
+        run: sigma check rules/
+
+      - name: Convert to a target backend as a smoke test (Splunk)
+        run: |
+          pip install pysigma-backend-splunk
+          sigma convert -t splunk -f default rules/ > /dev/null
+          echo "All rules converted cleanly to SPL."
