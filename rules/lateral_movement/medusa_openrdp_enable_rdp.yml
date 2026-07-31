@@ -1,0 +1,59 @@
+title: RDP Enabled via fDenyTSConnections Registry Change (Medusa openrdp.bat)
+id: c15efe1e-2987-4835-a40b-4ac25f981c32
+status: experimental
+description: |
+    Detects enabling of Remote Desktop by setting fDenyTSConnections to 0 via reg.exe, as done by
+    Medusa ransomware's openrdp.bat per CISA AA25-071A. Frequently paired with a netsh firewall
+    rule opening TCP/3389 (see companion rule below).
+references:
+    - https://www.cisa.gov/news-events/cybersecurity-advisories/aa25-071a
+author: Spencer (AI-augmented threat-hunting pipeline; T1-verified)
+date: 2026/07/31
+tags:
+    - attack.lateral-movement
+    - attack.defense-evasion
+    - attack.t1021.001
+    - attack.t1562.004
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        CommandLine|contains|all:
+            - 'fDenyTSConnections'
+            - '/d 0'
+    condition: selection
+falsepositives:
+    - An administrator may legitimately enable RDP; correlate with the actor's other activity
+      (netsh 3389 rule, PsExec, new accounts) and whether the change was expected.
+level: medium
+---
+title: Firewall Rule Added for RDP Port 3389 via netsh (Medusa openrdp.bat)
+id: 56af9895-8914-41f1-b936-97fa31a3b4aa
+status: experimental
+description: |
+    Detects a netsh advfirewall rule opening inbound TCP/3389, as done by Medusa's openrdp.bat
+    per CISA AA25-071A. Higher confidence when seen alongside the fDenyTSConnections=0 change.
+references:
+    - https://www.cisa.gov/news-events/cybersecurity-advisories/aa25-071a
+author: Spencer (AI-augmented threat-hunting pipeline; T1-verified)
+date: 2026/07/31
+tags:
+    - attack.defense-evasion
+    - attack.t1562.004
+    - attack.lateral-movement
+    - attack.t1021.001
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\netsh.exe'
+        CommandLine|contains|all:
+            - 'firewall'
+            - '3389'
+            - 'allow'
+    condition: selection
+falsepositives:
+    - Legitimate RDP enablement by IT. Correlate with fDenyTSConnections change and account context.
+level: medium

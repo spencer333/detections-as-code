@@ -1,0 +1,51 @@
+title: Executable or Ransom Note in C:\Users\Public\Music (Play Ransomware)
+id: 6de09c40-4d5a-434c-85c7-88c55267b9a0
+status: experimental
+description: |
+    Detects processes launching from, or a ReadMe.txt written to, C:\Users\Public\Music\ — the
+    unusual staging directory where Play (Playcrypt) ransomware places its tooling and ransom note
+    per CISA AA23-352A. Play recompiles its binary per attack, so hashes are unreliable; this
+    behavioral location is the durable signal.
+references:
+    - https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-352a
+author: Spencer (AI-augmented threat-hunting pipeline; T1-verified)
+date: 2026/07/31
+tags:
+    - attack.execution
+    - attack.defense-evasion
+    - attack.t1036
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_exec_from_music:
+        Image|contains: '\Users\Public\Music\'
+    selection_parent_from_music:
+        ParentImage|contains: '\Users\Public\Music\'
+    condition: selection_exec_from_music or selection_parent_from_music
+falsepositives:
+    - Legitimate software almost never executes binaries from the Public Music folder; investigate any hit.
+level: high
+---
+title: Play Ransomware ReadMe.txt Dropped in Public Music Folder
+id: 727f5959-6776-4e60-ab1b-75adc08fbcca
+status: experimental
+description: File-creation variant — Play drops its ReadMe.txt ransom note in C:\Users\Public\Music\.
+references:
+    - https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-352a
+author: Spencer (AI-augmented threat-hunting pipeline; T1-verified)
+date: 2026/07/31
+tags:
+    - attack.impact
+    - attack.t1486
+logsource:
+    category: file_event
+    product: windows
+detection:
+    selection:
+        TargetFilename|contains: '\Users\Public\Music\'
+        TargetFilename|endswith: 'ReadMe.txt'
+    condition: selection
+falsepositives:
+    - None expected.
+level: high

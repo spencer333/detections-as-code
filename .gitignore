@@ -1,0 +1,9 @@
+﻿.obsidian/
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+.terraform/
+*.tfstate
+*.tfstate.*
+results.csv

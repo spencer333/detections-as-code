@@ -1,0 +1,33 @@
+title: Interlock Ransomware - "Chrome Updater" Registry Run Key Persistence
+id: 2287c029-0742-41ac-8a19-0b27264e6aa7
+status: experimental
+description: |
+    Detects creation or modification of a Registry "Run" key value named "Chrome Updater",
+    a persistence mechanism used by Interlock ransomware actors per CISA/FBI advisory
+    AA25-203A. The value masquerades as a legitimate Chrome updater (T1036.005) and executes
+    a payload with a log file passed as an argument on each user logon.
+references:
+    - https://www.cisa.gov/news-events/cybersecurity-advisories/aa25-203a
+author: Spencer (AI-augmented threat-hunting pipeline; T1-verified)
+date: 2026/07/31
+tags:
+    - attack.persistence
+    - attack.t1547.001
+    - attack.defense-evasion
+    - attack.t1036.005
+logsource:
+    product: windows
+    category: registry_set
+detection:
+    selection_runkey:
+        TargetObject|contains:
+            - '\Software\Microsoft\Windows\CurrentVersion\Run\'
+            - '\Software\Microsoft\Windows\CurrentVersion\RunOnce\'
+    selection_name:
+        TargetObject|endswith: 'Chrome Updater'
+    condition: selection_runkey and selection_name
+falsepositives:
+    - Legitimate Google Chrome persistence uses value names 'GoogleUpdate' / 'Google Update',
+      not 'Chrome Updater'. Verify the value data — a real updater points at
+      GoogleUpdate.exe under Program Files, not a script or log-file argument.
+level: high

@@ -1,0 +1,30 @@
+title: Volume Shadow Copy Deletion via WMI (Akira)
+id: 99bcf39d-9198-4833-847c-bf96270da0f0
+status: experimental
+description: |
+    Detects deletion of Volume Shadow Copies through the WMI Shadowcopy class, used by Akira
+    ransomware to inhibit recovery before encryption per CISA AA24-109A. Ransomware routinely
+    destroys shadow copies to prevent rollback.
+references:
+    - https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-109a
+author: Spencer (AI-augmented threat-hunting pipeline; T1-verified)
+date: 2026/07/31
+tags:
+    - attack.impact
+    - attack.t1490
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_wmi_ps:
+        CommandLine|contains|all:
+            - 'Win32_Shadowcopy'
+            - 'Remove-WmiObject'
+    selection_wmic:
+        CommandLine|contains|all:
+            - 'shadowcopy'
+            - 'delete'
+    condition: selection_wmi_ps or selection_wmic
+falsepositives:
+    - Backup or storage-maintenance software may delete shadow copies; scope out known admin tooling.
+level: high

@@ -1,0 +1,31 @@
+title: Interlock Ransomware - rundll32 Executing tmp41.wasd Cleanup DLL
+id: 4ef7d971-b295-4515-9be3-5080b793cc46
+status: experimental
+description: |
+    Detects rundll32.exe executing a DLL with the anomalous extension ".wasd" (observed as
+    tmp41.wasd), used by Interlock ransomware to proxy-execute a binary that deletes the
+    encryptor after encryption (T1218.011 + T1070.004), per CISA/FBI advisory AA25-203A.
+    Also fires on any rundll32 loading a .wasd file, since DLLs are normally .dll.
+references:
+    - https://www.cisa.gov/news-events/cybersecurity-advisories/aa25-203a
+author: Spencer (AI-augmented threat-hunting pipeline; T1-verified)
+date: 2026/07/31
+tags:
+    - attack.defense-evasion
+    - attack.t1218.011
+    - attack.t1070.004
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_img:
+        Image|endswith: '\rundll32.exe'
+    selection_wasd:
+        CommandLine|contains:
+            - 'tmp41.wasd'
+            - '.wasd'
+    condition: selection_img and selection_wasd
+falsepositives:
+    - Unknown. The .wasd extension for a DLL loaded by rundll32 is not expected in benign
+      activity; investigate any hit.
+level: high
