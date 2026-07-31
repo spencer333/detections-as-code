@@ -2,13 +2,17 @@ title: LSASS Credential Dump via comsvcs.dll MiniDump (Akira)
 id: 2c093d4d-d5fd-48bb-aa71-63e5e8d11147
 status: experimental
 description: |
-    Detects the comsvcs.dll MiniDump LOLBIN technique used to dump LSASS process memory for
-    credential theft, observed in Akira ransomware intrusions per CISA AA24-109A. This is a
-    high-fidelity technique with virtually no benign use.
+    Detects the comsvcs.dll MiniDump LOLBIN technique used to dump process memory (typically LSASS)
+    for credential theft, observed in Akira ransomware intrusions per CISA AA24-109A. Fires on the
+    comsvcs.dll + MiniDump combination alone, which is a near-zero-FP signature: attackers frequently
+    pass the target by PID rather than the name "lsass" (e.g. `comsvcs.dll, MiniDump 4868 ...`), so
+    requiring the literal string "lsass" creates a blind spot. Validated against a real comsvcs
+    MiniDump sample (EVTX-ATTACK-SAMPLES) that dumped by PID; see the evtx-validation lab.
 references:
     - https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-109a
-author: Spencer (AI-augmented threat-hunting pipeline; T1-verified)
+author: Spencer (AI-augmented threat-hunting pipeline; T1-verified; tuned via EVTX validation)
 date: 2026/07/31
+modified: 2026/07/31
 tags:
     - attack.credential-access
     - attack.t1003.001
@@ -16,15 +20,11 @@ logsource:
     category: process_creation
     product: windows
 detection:
-    selection_comsvcs:
+    selection:
         CommandLine|contains|all:
             - 'comsvcs.dll'
             - 'MiniDump'
-    selection_lsass:
-        CommandLine|contains:
-            - 'lsass'
-            - '(Get-Process lsass).Id'
-    condition: selection_comsvcs and selection_lsass
+    condition: selection
 falsepositives:
-    - Extremely rare. Legitimate crash-dumping does not invoke comsvcs.dll MiniDump against LSASS.
+    - Extremely rare. Legitimate crash-dumping does not invoke comsvcs.dll's MiniDump export via rundll32.
 level: high
