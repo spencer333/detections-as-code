@@ -1,0 +1,38 @@
+title: RDP Enabled or Hijacked via Registry (Terminal Server tampering)
+id: 52f7e01d-34f9-4d03-a7d3-c9620e969984
+status: experimental
+description: |
+    Detects registry-based tampering with Terminal Server / RDP settings: enabling RDP by setting
+    fDenyTSConnections to 0, repointing the TermService ServiceDll (RDP Wrapper / service hijack), or
+    changing the RDP listening port. Complements the process_creation rule medusa_openrdp_enable_rdp,
+    which only sees the reg.exe / netsh command line and misses direct registry-API modification.
+    Added after the EVTX detection-validation lab showed a real RDP-tamper sample that set these keys
+    via the registry (Sysmon EID 13), invisible to the process_creation rule.
+references:
+    - https://www.cisa.gov/news-events/cybersecurity-advisories/aa25-071a
+    - https://github.com/sbousseaden/EVTX-ATTACK-SAMPLES
+author: Spencer (added from EVTX validation lab; T1-authored)
+date: 2026/07/31
+tags:
+    - attack.lateral-movement
+    - attack.t1021.001
+    - attack.defense-evasion
+    - attack.t1112
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    sel_fdeny_enable:
+        TargetObject|endswith: '\Control\Terminal Server\fDenyTSConnections'
+        Details: 'DWORD (0x00000000)'
+    sel_servicedll:
+        TargetObject|endswith: '\services\TermService\Parameters\ServiceDll'
+    filter_legit_servicedll:
+        Details|contains: 'termsrv.dll'
+    sel_port:
+        TargetObject|endswith: '\Terminal Server\WinStations\RDP-Tcp\PortNumber'
+    condition: sel_fdeny_enable or (sel_servicedll and not filter_legit_servicedll) or sel_port
+falsepositives:
+    - An administrator may legitimately enable RDP (fDenyTSConnections=0). The ServiceDll and
+      PortNumber conditions are high-fidelity; correlate the fDeny condition with account/host context.
+level: high
