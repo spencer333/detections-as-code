@@ -8,13 +8,20 @@ Every rule is generated as a first draft by an [AI threat-hunting pipeline](http
 **verified by a human**, and gated by CI (`sigma check` on every push). Portfolio project 2 of 5 —
 see the career roadmap.
 
-[![sigma-lint](https://img.shields.io/badge/ci-sigma--lint-blue)](.github/workflows/sigma-lint.yml)
+[![sigma-lint](https://github.com/spencer333/detections-as-code/actions/workflows/sigma-lint.yml/badge.svg)](https://github.com/spencer333/detections-as-code/actions/workflows/sigma-lint.yml)
+
+> **Enabling CI:** the `sigma-lint` workflow is included in the repo tree but must be added by an
+> account whose token carries the `workflow` scope. To activate it:
+> `gh auth refresh -h github.com -s workflow`, then
+> `git add .github/workflows/sigma-lint.yml && git commit -m "Add CI" && git push`. The badge above
+> goes live once the first run completes.
 
 ## Layout
 ```
 rules/<attack-tactic>/<threat>_<behavior>.yml   # one behavior per file, ATT&CK-tagged
 .github/workflows/sigma-lint.yml                # CI: sigma check + Splunk conversion smoke test
-coverage.md                                     # ATT&CK coverage navigator
+coverage.md                                     # ATT&CK coverage table + known gaps
+coverage-navigator-layer.json                   # ATT&CK Navigator layer (import to visualize coverage)
 CONTRIBUTING.md                                 # the detect-as-code process (how a rule gets in)
 tests/                                          # (planned) positive/negative log samples per rule
 ```
@@ -30,6 +37,9 @@ tests/                                          # (planned) positive/negative lo
 | `lateral_movement/medusa_openrdp_enable_rdp` (2 rules) | Medusa | T1021.001, T1562.004 | AA25-071A |
 
 **8 detections across 4 ransomware families, 6 ATT&CK tactics.** See [coverage.md](coverage.md).
+Import [coverage-navigator-layer.json](coverage-navigator-layer.json) into the
+[ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/) (*Open Existing Layer → Upload*)
+to render the coverage heatmap — the cleanest single image for a résumé or LinkedIn post.
 
 ## Use
 ```bash

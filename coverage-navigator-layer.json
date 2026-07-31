@@ -1,0 +1,26 @@
+{
+  "name": "detections-as-code coverage",
+  "versions": { "attack": "16", "navigator": "4.9.5", "layer": "4.5" },
+  "domain": "enterprise-attack",
+  "description": "MITRE ATT&CK techniques with a committed, tested Sigma detection in spencer333/detections-as-code. Import at https://mitre-attack.github.io/attack-navigator/ (Open Existing Layer -> Upload). Generated from coverage.md.",
+  "sorting": 0,
+  "layout": { "layout": "side", "showID": true, "showName": true },
+  "hideDisabled": false,
+  "techniques": [
+    { "techniqueID": "T1547.001", "score": 100, "enabled": true, "comment": "interlock_chrome_updater_runkey (Interlock)" },
+    { "techniqueID": "T1036.005", "score": 100, "enabled": true, "comment": "interlock_chrome_updater_runkey (Interlock)" },
+    { "techniqueID": "T1218.011", "score": 100, "enabled": true, "comment": "interlock_rundll32_wasd_cleanup (Interlock)" },
+    { "techniqueID": "T1070.004", "score": 100, "enabled": true, "comment": "interlock_rundll32_wasd_cleanup (Interlock)" },
+    { "techniqueID": "T1003.001", "score": 100, "enabled": true, "comment": "akira_lsass_comsvcs_minidump (Akira)" },
+    { "techniqueID": "T1490", "score": 100, "enabled": true, "comment": "akira_vss_shadow_delete_wmi (Akira)" },
+    { "techniqueID": "T1036", "score": 100, "enabled": true, "comment": "play_tooling_in_public_music (Play)" },
+    { "techniqueID": "T1486", "score": 100, "enabled": true, "comment": "play_tooling_in_public_music (Play)" },
+    { "techniqueID": "T1021.001", "score": 100, "enabled": true, "comment": "medusa_openrdp_enable_rdp (Medusa)" },
+    { "techniqueID": "T1562.004", "score": 100, "enabled": true, "comment": "medusa_openrdp_enable_rdp (Medusa)" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#2e7d32"], "minValue": 0, "maxValue": 100 },
+  "legendItems": [ { "label": "Has tested Sigma detection", "color": "#2e7d32" } ],
+  "showTacticRowBackground": false,
+  "selectTechniquesAcrossTactics": true,
+  "selectSubtechniquesWithParent": false
+}
