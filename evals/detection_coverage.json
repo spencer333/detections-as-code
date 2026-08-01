@@ -5,7 +5,7 @@
   "samples_tested": 20,
   "false_positives": 0,
   "note": "validated=true means the rule fired on a real attack sample of its technique with no false positive across the corpus. validated=false means precise-but-unproven (no matching sample available yet).",
-  "in_scope_techniques": ["T1003.001","T1490","T1218.011","T1070.004","T1547.001","T1036.005","T1036","T1486","T1021.001","T1562.004","T1112"],
+  "in_scope_techniques": ["T1003.001","T1490","T1218.011","T1070.004","T1547.001","T1036.005","T1036","T1486","T1021.001","T1562.004","T1112","T1562.001"],
   "rules": [
     { "rule": "akira_lsass_comsvcs_minidump", "techniques": ["T1003.001"], "level": "high", "validated": true,
       "evidence": "fires on comsvcs MiniDump (by-PID) sample; silent on 6 other LSASS-dump methods (mimikatz, MiniDumpWriteDump, rdrleakdiag, hashdump, reflection, memssp) = precise" },
@@ -24,6 +24,8 @@
     { "rule": "play_tooling_in_public_music_exec", "techniques": ["T1036"], "level": "high", "validated": false,
       "note": "no C:\\Users\\Public\\Music staging sample in corpus" },
     { "rule": "play_tooling_in_public_music_note", "techniques": ["T1486"], "level": "high", "validated": false,
-      "note": "no Public\\Music ransom-note file_event sample in corpus" }
+      "note": "no Public\\Music ransom-note file_event sample in corpus" },
+    { "rule": "ghost_disable_defender_setmppreference", "techniques": ["T1562.001"], "level": "high", "validated": false,
+      "note": "added 2026-07-31 from CISA AA25-050A (Ghost/Cring) via the advisory pipeline; validate with Atomic Red Team T1562.001 (Set-MpPreference disable)" }
   ]
 }

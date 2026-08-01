@@ -1,0 +1,36 @@
+title: Windows Defender Protections Disabled via Set-MpPreference (Ghost/Cring)
+id: 57717c40-831e-46a9-b4c3-c414bbec75f4
+status: experimental
+description: |
+    Detects PowerShell using Set-MpPreference to turn off Microsoft Defender protections (real-time
+    monitoring, behavior/script/IOAV scanning, cloud reporting), a defense-evasion step used by Ghost
+    (Cring) ransomware before deploying its payload, per CISA/FBI advisory AA25-050A. The observed
+    command disables nearly every Defender protection at once. Adds T1562.001 coverage.
+references:
+    - https://www.cisa.gov/news-events/cybersecurity-advisories/aa25-050a
+author: Spencer (AI threat-hunting pipeline, run 2026-07-31-234721; T1-verified)
+date: 2026/07/31
+tags:
+    - attack.defense-evasion
+    - attack.t1562.001
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_setmp:
+        CommandLine|contains: 'Set-MpPreference'
+    selection_disable:
+        CommandLine|contains:
+            - '-DisableRealtimeMonitoring 1'
+            - '-DisableRealtimeMonitoring $true'
+            - '-DisableBehaviorMonitoring 1'
+            - '-DisableIOAVProtection 1'
+            - '-DisableScriptScanning 1'
+            - '-DisableIntrusionPreventionSystem 1'
+            - '-MAPSReporting Disabled'
+            - '-SubmitSamplesConsent NeverSend'
+    condition: selection_setmp and selection_disable
+falsepositives:
+    - Some EDR onboarding or lab-build scripts toggle Defender settings. Legitimate admins rarely
+      disable real-time monitoring on production hosts; correlate with the account and what ran next.
+level: high

@@ -18,8 +18,9 @@ detection-coverage benchmark
 | Defense Evasion | Disable/Modify System Firewall | T1562.004 | medusa_openrdp_enable_rdp | Medusa |
 | Lateral Movement | Remote Desktop Protocol | T1021.001 | rdp_registry_enable_tamper | (EVTX-validated) |
 | Defense Evasion | Modify Registry | T1112 | rdp_registry_enable_tamper | (EVTX-validated) |
+| Defense Evasion | Impair Defenses: Disable Tools | T1562.001 | ghost_disable_defender_setmppreference | Ghost/Cring (AA25-050A) |
 
-**Coverage: 9 rules · 6 ATT&CK tactics.** `rdp_registry_enable_tamper` was added after the EVTX
+**Coverage: 10 rules · 6 ATT&CK tactics.** `rdp_registry_enable_tamper` was added after the EVTX
 detection-validation lab found that registry-based RDP tampering (fDenyTSConnections=0, ServiceDll
 hijack, port change via the registry API) was invisible to the process_creation rule. It is validated
 to fire on a real EVTX-ATTACK-SAMPLES RDP-tamper sample.
