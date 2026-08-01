@@ -8,9 +8,13 @@ turns that into a number you can move.
 Run `run_coverage.ps1`:
 ```
 False positives: 0 across 20 samples
-Rules validated: 3 / 9 (33%)
-Techniques with a validated rule: 4 / 11 (36%)
+Rules validated: 3 / 10 (30%)      # fired on REAL attack telemetry
+Techniques with a validated rule: 4 / 12 (33%)
+Rules unit-tested (logic): 10 / 10 (100%)   # see ../tests/
 ```
+Two metrics on purpose: **unit-tested** (`../tests/`) proves the rule logic; **validated** (here)
+proves a real attacker trips it. Adding a rule raises unit-tested immediately but leaves validated
+flat until real telemetry proves it — which is why the two are separate.
 `validated` = the rule fired on a real attack sample of its technique, with **zero false positives**
 across a 20-sample regression corpus (public [EVTX-ATTACK-SAMPLES](https://github.com/sbousseaden/EVTX-ATTACK-SAMPLES)).
 

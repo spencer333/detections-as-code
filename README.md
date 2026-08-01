@@ -23,16 +23,21 @@ rules/<attack-tactic>/<threat>_<behavior>.yml   # one behavior per file, ATT&CK-
 coverage.md                                     # ATT&CK coverage table + known gaps
 coverage-navigator-layer.json                   # ATT&CK Navigator layer (import to visualize coverage)
 CONTRIBUTING.md                                 # the detect-as-code process (how a rule gets in)
+advisory-pipeline.md                            # continuous advisory -> detection loop (A3)
 evals/                                          # detection-coverage benchmark + regression harness
-tests/                                          # (planned) positive/negative log samples per rule
+tests/                                          # detection unit tests (positive/negative per rule)
 ```
 
 ## Are the rules any good? (the benchmark)
-Rules are validated against **real** attack telemetry, not just linted. See [`evals/`](evals/):
-running the regression harness over a 20-sample corpus gives **0 false positives**, and the
-coverage benchmark reports **3/9 rules and 4/11 techniques validated so far** — an honest number that
-goes up as more rules get proven against real samples. That's the objective function this library is
-optimized against.
+Rules are tested two ways, not just linted:
+- **Unit-tested (logic):** every rule fires on its advisory-documented IOC and stays silent on a
+  benign near-miss — **10/10 (100%)** via [`tests/run_tests.ps1`](tests/run_tests.ps1).
+- **Validated (real telemetry):** the rule fired on a **real** attack sample with 0 false positives
+  across a 20-sample corpus — **3/10 rules, 4/12 techniques** via [`evals/`](evals/). This is the
+  honest number that only real attacker telemetry can move (see [`evals/README`](evals/README.md)).
+
+Both matter: unit-tested proves the rule says what you meant; validated proves a real attacker trips
+it. Keeping them separate is the point — a rule can pass its unit test and still miss the real world.
 
 ## Current detections
 | Rule | Threat | ATT&CK | Source |

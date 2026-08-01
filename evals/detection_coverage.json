@@ -5,27 +5,125 @@
   "samples_tested": 20,
   "false_positives": 0,
   "note": "validated=true means the rule fired on a real attack sample of its technique with no false positive across the corpus. validated=false means precise-but-unproven (no matching sample available yet).",
-  "in_scope_techniques": ["T1003.001","T1490","T1218.011","T1070.004","T1547.001","T1036.005","T1036","T1486","T1021.001","T1562.004","T1112","T1562.001"],
+  "in_scope_techniques": [
+    "T1003.001",
+    "T1490",
+    "T1218.011",
+    "T1070.004",
+    "T1547.001",
+    "T1036.005",
+    "T1036",
+    "T1486",
+    "T1021.001",
+    "T1562.004",
+    "T1112",
+    "T1562.001"
+  ],
   "rules": [
-    { "rule": "akira_lsass_comsvcs_minidump", "techniques": ["T1003.001"], "level": "high", "validated": true,
-      "evidence": "fires on comsvcs MiniDump (by-PID) sample; silent on 6 other LSASS-dump methods (mimikatz, MiniDumpWriteDump, rdrleakdiag, hashdump, reflection, memssp) = precise" },
-    { "rule": "rdp_registry_enable_tamper", "techniques": ["T1021.001","T1112"], "level": "high", "validated": true,
-      "evidence": "fires on RDP registry-tamper sample (fDenyTSConnections=0 / ServiceDll hijack / port change); silent on RDP-tunnel and SharpRDP noise" },
-    { "rule": "medusa_openrdp_netsh_3389", "techniques": ["T1562.004","T1021.001"], "level": "medium", "validated": true,
-      "evidence": "fires on netsh firewall allow 3389; note the sample rule was named 'Remote Desktop' (legit-looking) - designed for correlation, hence level medium" },
-    { "rule": "medusa_openrdp_fDenyTSConnections", "techniques": ["T1021.001"], "level": "medium", "validated": false,
-      "note": "no reg.exe 'fDenyTSConnections /d 0' command-line sample in corpus; the registry-API path is covered by rdp_registry_enable_tamper" },
-    { "rule": "interlock_rundll32_wasd_cleanup", "techniques": ["T1218.011","T1070.004"], "level": "high", "validated": false,
-      "note": "narrow by design (.wasd); silent on 3 generic rundll32 samples (0 FP) but no positive sample of the exact IOC" },
-    { "rule": "interlock_chrome_updater_runkey", "techniques": ["T1547.001","T1036.005"], "level": "high", "validated": false,
-      "note": "narrow by design ('Chrome Updater' Run value); silent on generic Run-key samples" },
-    { "rule": "akira_vss_shadow_delete_wmi", "techniques": ["T1490"], "level": "high", "validated": false,
-      "note": "no shadow-copy-DELETION sample exists in the 278-file corpus; validate with Atomic Red Team T1490" },
-    { "rule": "play_tooling_in_public_music_exec", "techniques": ["T1036"], "level": "high", "validated": false,
-      "note": "no C:\\Users\\Public\\Music staging sample in corpus" },
-    { "rule": "play_tooling_in_public_music_note", "techniques": ["T1486"], "level": "high", "validated": false,
-      "note": "no Public\\Music ransom-note file_event sample in corpus" },
-    { "rule": "ghost_disable_defender_setmppreference", "techniques": ["T1562.001"], "level": "high", "validated": false,
-      "note": "added 2026-07-31 from CISA AA25-050A (Ghost/Cring) via the advisory pipeline; validate with Atomic Red Team T1562.001 (Set-MpPreference disable)" }
-  ]
+    {
+      "rule": "akira_lsass_comsvcs_minidump",
+      "techniques": [
+        "T1003.001"
+      ],
+      "level": "high",
+      "validated": true,
+      "evidence": "fires on comsvcs MiniDump (by-PID) sample; silent on 6 other LSASS-dump methods (mimikatz, MiniDumpWriteDump, rdrleakdiag, hashdump, reflection, memssp) = precise",
+      "unit_tested": true
+    },
+    {
+      "rule": "rdp_registry_enable_tamper",
+      "techniques": [
+        "T1021.001",
+        "T1112"
+      ],
+      "level": "high",
+      "validated": true,
+      "evidence": "fires on RDP registry-tamper sample (fDenyTSConnections=0 / ServiceDll hijack / port change); silent on RDP-tunnel and SharpRDP noise",
+      "unit_tested": true
+    },
+    {
+      "rule": "medusa_openrdp_netsh_3389",
+      "techniques": [
+        "T1562.004",
+        "T1021.001"
+      ],
+      "level": "medium",
+      "validated": true,
+      "evidence": "fires on netsh firewall allow 3389; note the sample rule was named 'Remote Desktop' (legit-looking) - designed for correlation, hence level medium",
+      "unit_tested": true
+    },
+    {
+      "rule": "medusa_openrdp_fDenyTSConnections",
+      "techniques": [
+        "T1021.001"
+      ],
+      "level": "medium",
+      "validated": false,
+      "note": "no reg.exe 'fDenyTSConnections /d 0' command-line sample in corpus; the registry-API path is covered by rdp_registry_enable_tamper",
+      "unit_tested": true
+    },
+    {
+      "rule": "interlock_rundll32_wasd_cleanup",
+      "techniques": [
+        "T1218.011",
+        "T1070.004"
+      ],
+      "level": "high",
+      "validated": false,
+      "note": "narrow by design (.wasd); silent on 3 generic rundll32 samples (0 FP) but no positive sample of the exact IOC",
+      "unit_tested": true
+    },
+    {
+      "rule": "interlock_chrome_updater_runkey",
+      "techniques": [
+        "T1547.001",
+        "T1036.005"
+      ],
+      "level": "high",
+      "validated": false,
+      "note": "narrow by design ('Chrome Updater' Run value); silent on generic Run-key samples",
+      "unit_tested": true
+    },
+    {
+      "rule": "akira_vss_shadow_delete_wmi",
+      "techniques": [
+        "T1490"
+      ],
+      "level": "high",
+      "validated": false,
+      "note": "no shadow-copy-DELETION sample exists in the 278-file corpus; validate with Atomic Red Team T1490",
+      "unit_tested": true
+    },
+    {
+      "rule": "play_tooling_in_public_music_exec",
+      "techniques": [
+        "T1036"
+      ],
+      "level": "high",
+      "validated": false,
+      "note": "no C:\\Users\\Public\\Music staging sample in corpus",
+      "unit_tested": true
+    },
+    {
+      "rule": "play_tooling_in_public_music_note",
+      "techniques": [
+        "T1486"
+      ],
+      "level": "high",
+      "validated": false,
+      "note": "no Public\\Music ransom-note file_event sample in corpus",
+      "unit_tested": true
+    },
+    {
+      "rule": "ghost_disable_defender_setmppreference",
+      "techniques": [
+        "T1562.001"
+      ],
+      "level": "high",
+      "validated": false,
+      "note": "added 2026-07-31 from CISA AA25-050A (Ghost/Cring) via the advisory pipeline; validate with Atomic Red Team T1562.001 (Set-MpPreference disable)",
+      "unit_tested": true
+    }
+  ],
+  "unit_test_note": "unit_tested=true means the rule fired on its advisory-documented IOC and stayed silent on a benign near-miss (tests/run_tests.ps1). This proves rule LOGIC; it is not the same as 'validated' (fired on real attack telemetry)."
 }
